@@ -1,0 +1,64 @@
+body {
+  font-family: 'PT Sans', 'Helvetica Neue', 'Arial';
+}
+
+input {
+  margin-right: 5px;
+  font-size: 16pt;
+  flex-grow: 1;
+}
+
+section {
+  border: 1px solid gray;
+  border-radius: 2px;
+  padding: 3px 5px;
+  margin-bottom: 5px;
+}
+
+h1 {
+  font-size: 14pt;
+  margin: 0;
+}
+
+blockquote {
+  margin-left: 0;
+  border-radius: 0;
+  border-width: 0;
+  padding: 0 5px;
+  background-color: rgb(247, 244, 232);
+  color: black;
+}
+
+sup {
+  font-size: 8pt;
+  color: gray;
+}
+
+button {
+  font-size: 14pt;
+  margin-right: 1px;
+  width: 30px;
+  height: 30px;
+}
+
+img {
+  max-width: 100%;
+}
+
+.flex {
+  display: flex;
+}
+
+.tag {
+  background-color: lightgray;
+  border-radius: 3px;
+  padding: 2px 4px;
+  text-decoration: none;
+  color: hsl(0, 0%, 30%);
+  font-size: 10pt;
+  margin-right: 1px;
+}
+
+.mb5 {
+  margin-bottom: 0.5rem;
+}

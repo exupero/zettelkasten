@@ -1,0 +1,13 @@
+;; shadow-cljs configuration
+{:source-paths ["src"]
+ :dependencies [[reagent/reagent "1.0.0"]
+                [cljs-ajax/cljs-ajax "0.8.4"]
+                [markdown-clj "1.10.7"]
+                [hickory "0.7.1"]]
+ :dev-http {8090 {:root "public"
+                  :handler zettel.backend.handler/handler}}
+ :builds {:dev {:target :browser
+                :modules {:main {:init-fn zettel.frontend.core/init}}}
+          :prod {:target :browser
+                 :modules {:main {:init-fn zettel.frontend.core/init}}
+                 :compiler-options {:optimizations :advanced}}}}
