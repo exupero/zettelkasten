@@ -77,7 +77,7 @@
                             , n))))
     hickory-to-html))
 
-(defn get-cards []
+(defn get-cards [path]
   (into []
         (comp
           (remove #(.isDirectory %))
@@ -85,18 +85,34 @@
           (map (fn [f]
                  {:id (string/replace (.getName f) #"\.md$" "")
                   :content (md->html (slurp f))})))
-        (file-seq (io/file (System/getenv "ZETTELKASTEN_PATH")))))
+        (file-seq (io/file path))))
+
+(defn image-paths [path]
+  (sequence
+    (comp
+      (map #(.getName %))
+      (filter (partial re-find #"\.(jpg|png|svg)$")))
+    (file-seq (io/file path))))
+
+(defn cache-manifest [path]
+  (string/join "\n" (concat
+                      ["CACHE MANIFEST" "index.html" "js/main.js" "css/style.css"]
+                      (image-paths path)
+                      ["" "NETWORK:" "cards.edn" "" "CACHE:"])))
 
 (defn handler [req]
-  (cond
-    (= "/cards.edn" (req :uri))
-    , {:status 200 :body (pr-str (get-cards))}
-    (re-find #"\.png$" (req :uri))
-    , (let [f (io/file (str (System/getenv "ZETTELKASTEN_PATH") (req :uri)))]
-        (if (.exists f)
-          {:status 200 :body f :headers {"Content-type" "image/png"}}
-          {:status 404 :body "Image not found"}))
-    :else
-    , (do
-        (prn req)
-        {:status 404 :body "Not found"})))
+  (let [path (System/getenv "ZETTELKASTEN_PATH")]
+    (cond
+      (= "/cache.manifesto" (req :uri))
+      , {:status 200 :body (cache-manifest path)}
+      (= "/cards.edn" (req :uri))
+      , {:status 200 :body (pr-str (get-cards path))}
+      (re-find #"\.png$" (req :uri))
+      , (let [f (io/file (str path (req :uri)))]
+          (if (.exists f)
+            {:status 200 :body f :headers {"Content-type" "image/png"}}
+            {:status 404 :body "Image not found"}))
+      :else
+      , (do
+          (prn req)
+          {:status 404 :body "Not found"}))))

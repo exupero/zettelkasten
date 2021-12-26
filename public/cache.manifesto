@@ -1,9 +1,0 @@
-CACHE MANIFEST
-js/main.js
-css/style.css
-*.png
-
-NETWORK:
-cards.edn
-
-CACHE:
