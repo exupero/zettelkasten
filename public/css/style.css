@@ -59,6 +59,11 @@ img {
   margin-right: 1px;
 }
 
+.show-more {
+  color: blue;
+  cursor: pointer;
+}
+
 .mb5 {
   margin-bottom: 0.5rem;
 }

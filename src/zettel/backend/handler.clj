@@ -56,11 +56,17 @@
            s))
        (split-by #"\s?\^([0-9]+)\s*" s)))
 
-(defn md->html [md]
+(defn md->hickory [md]
   (-> md
     md-to-html-string
     hickory/parse
     hickory/as-hickory
+    ; get down to the contents of the HTML <body> tag
+    :content
+    first ; <html> tag
+    :content
+    second ; skip <head> and get <body>
+    :content
     (->> (walk/postwalk (fn [n]
                           (cond
                             (link? n)
@@ -74,8 +80,7 @@
                                                        [(key %) (flatten (val %))]
                                                        %))))
                             :else
-                            , n))))
-    hickory-to-html))
+                            , n))))))
 
 (defn get-cards [path]
   (into []
@@ -83,8 +88,16 @@
           (remove #(.isDirectory %))
           (filter (comp (partial re-find #"\.md$") #(.getName %)))
           (map (fn [f]
-                 {:id (string/replace (.getName f) #"\.md$" "")
-                  :content (md->html (slurp f))})))
+                 (let [content (md->hickory (slurp f))]
+                   {:id (string/replace (.getName f) #"\.md$" "")
+                    :preview (hickory-to-html
+                               {:type :element
+                                :tag :div
+                                :content (take 3 content)})
+                    :content (hickory-to-html
+                               {:type :element
+                                :tag :div
+                                :content content})}))))
         (file-seq (io/file path))))
 
 (defn image-paths [path]

@@ -18,7 +18,8 @@
   (swap! state assoc :search []))
 
 (defonce state (r/atom {:search []
-                        :cards []}))
+                        :cards []
+                        :showing #{}}))
 
 (defn matches? [{:keys [id content]} [search-key search-value]]
   (condp = search-key
@@ -30,7 +31,7 @@
 (defn main [state]
   (let [input (r/atom nil)]
     (fn [state]
-      (let [{:keys [cards search]} @state]
+      (let [{:keys [cards search showing]} @state]
         [:div
          [:div {:class "flex mb5"}
           [:input {:type :text
@@ -43,10 +44,21 @@
            "×"]
           [:button {:on-click #(fetch-cards state)} "↻"]]
          (when-not (string/blank? (second search))
-           [:div (for [{:keys [id content] :as card} cards
+           [:div (for [{:keys [id preview content] :as card} cards
                        :when (matches? card search)]
-                   ^{:key id}
-                   [:section {:dangerouslySetInnerHTML {:__html content}}])])]))))
+                   (if (showing id)
+                     ^{:key id}
+                     [:section
+                      [:div {:dangerouslySetInnerHTML {:__html content}}]
+                      [:div [:span.show-more
+                             {:on-click #(swap! state update :showing disj id)}
+                             "Show less"]]]
+                     ^{:key id}
+                     [:section
+                      [:div {:dangerouslySetInnerHTML {:__html preview}}]
+                      [:div [:span.show-more
+                             {:on-click #(swap! state update :showing conj id)}
+                             "Show more"]]]))])]))))
 
 (defn get-cards [state]
   (if-let [cards (.getItem js/window.localStorage "cards")]
