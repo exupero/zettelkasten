@@ -20,6 +20,10 @@
         :else
         ret))))
 
+(defn h1? [node]
+  (and (map? node)
+       (= :h1 (node :tag))))
+
 (defn tag? [node]
   (and (map? node)
        (-> node :content first string?)
@@ -37,6 +41,12 @@
   (if (->> node :attrs :href (re-find #"/"))
     node
     (update-in node [:attrs :href] (partial str "#id="))))
+
+(defn link-h1 [id node]
+  (assoc node :content [{:type :element
+                         :tag :a
+                         :attrs {:href (str "#id=" id)}
+                         :content (node :content)}]))
 
 (defn link-tag [node]
   (let [tags (->> node :content first (re-seq #"\[([^]]+)\]:") (map second))
@@ -56,7 +66,7 @@
            s))
        (split-by #"\s?\^([0-9]+)\s*" s)))
 
-(defn md->hickory [md]
+(defn md->hickory [id md]
   (-> md
     md-to-html-string
     hickory/parse
@@ -69,6 +79,8 @@
     :content
     (->> (walk/postwalk (fn [n]
                           (cond
+                            (h1? n)
+                            , (link-h1 id n)
                             (link? n)
                             , (route-link n)
                             (tag? n)
@@ -88,8 +100,9 @@
           (remove #(.isDirectory %))
           (filter (comp (partial re-find #"\.md$") #(.getName %)))
           (map (fn [f]
-                 (let [content (md->hickory (slurp f))]
-                   {:id (string/replace (.getName f) #"\.md$" "")
+                 (let [id (string/replace (.getName f) #"\.md$" "")
+                       content (md->hickory id (slurp f))]
+                   {:id id
                     :preview (hickory-to-html
                                {:type :element
                                 :tag :div
