@@ -40,7 +40,8 @@
                    :on-change #(swap! state assoc :search [:content (.. % -target -value)])}]
           [:button {:on-click #(do
                                  (clear-search state)
-                                 (set! (.-value @input) ""))}
+                                 (set! (.-value @input) "")
+                                 (.focus @input))}
            "×"]
           [:button {:on-click #(fetch-cards state)} "↻"]]
          (when-not (string/blank? (second search))
