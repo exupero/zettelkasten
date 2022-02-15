@@ -1,0 +1,3 @@
+{:paths ["."]
+ :tasks {:requires ([server])
+         serve (server/start-server)}}

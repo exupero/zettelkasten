@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html manifest="cache.manifest">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <link href="/style.css" rel="stylesheet" />
+    <title>Zettelkasten</title>
+  </head>
+  <body>
+    <div id="controls">
+      <button onclick="window.previous()">&lt;</button>
+      <input onkeyup="window.matchingText(event.target.value)" type="text" />
+      <button onclick="window.reset()">×</button>
+      <button onclick="window.load()">↻</button>
+    </div>
+    <div id="results"></div>
+    <script src="/app.js" type="application/javascript"></script>
+  </body>
+</html>

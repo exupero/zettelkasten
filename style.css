@@ -1,0 +1,54 @@
+body { font-family: 'PT Sans', 'Helvetica Neue', Arial }
+
+#controls { display: flex }
+#controls input { flex-grow: 1; font-size: 16pt }
+
+section {
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 0.2rem 0.3rem;
+  margin: 0.2rem 0;
+}
+
+h1 {
+  margin: 0;
+  font-size: 14pt;
+  cursor: pointer;
+}
+
+p:last-child { margin-bottom: 0 }
+
+blockquote {
+  padding: 0.2rem 0.3rem 0.2rem 0.3rem;
+  margin: 0;
+  background: hsl(34, 44%, 90%);
+}
+
+blockquote p:first-child { margin-top: 0 }
+
+sup {
+  font-size: 8pt;
+  color: dimgray;
+}
+
+.tag {
+  background: lightgray;
+  border-radius: 3px;
+  text-decoration: none;
+  color: black;
+  padding: 2px 5px;
+  margin-right: 0.1rem;
+  cursor: pointer;
+}
+
+.btn-link {
+  color: blue;
+  cursor: pointer;
+}
+
+section.truncated > *:nth-child(n+4) { display: none }
+section.truncated .show-more { display: block }
+section:not(.truncated) .show-more { display: none }
+
+#results > section:only-child > * { display: block }
+#results > section:only-child .show-more, #results > section:only-child .show-less { display: none }
